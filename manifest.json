@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Typewriter Scrolling",
+  "version": "1.0",
+  "description": "Adds typewriter scrolling to Google Docs and Sheets.",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://docs.google.com/document/*",
+        "https://docs.google.com/spreadsheets/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
