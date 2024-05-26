@@ -1,31 +1,53 @@
 // content.js
 // Runs in the context of the webpage that the user is viewing.
+// Meant to enable typewriter scrolling in Google Docs.
 
 const enableTypewriterScrolling = () => {
-  document.addEventListener("keydown", (event) => {
-    const activeElement = document.activeElement;
+  let scrollTimeout;
 
-    if (activeElement && activeElement.tagName === "BODY") {
-      // Calculate the position for typewriter scrolling
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-      const scrollTop = document.documentElement.scrollTop;
-      const elementRect = activeElement.getBoundingClientRect();
+  const scrollToCenter = () => {
+    const editor = document.querySelector(".kix-appview-editor");
+    const cursor = document.querySelector(".kix-cursor-caret");
 
-      const desiredScrollPosition =
-        scrollTop + elementRect.top - clientHeight / 2 + elementRect.height / 2;
+    if (editor && cursor) {
+      const cursorRect = cursor.getBoundingClientRect();
+      const editorRect = editor.getBoundingClientRect();
+      const offset = cursorRect.top - editorRect.top;
+      const scrollTop = editor.scrollTop;
+      const desiredScrollTop = scrollTop + offset - editorRect.height / 2;
 
-      if (
-        desiredScrollPosition < scrollHeight - clientHeight &&
-        desiredScrollPosition > 0
-      ) {
-        window.scrollTo({
-          top: desiredScrollPosition,
-          behavior: "smooth",
-        });
-      }
+      editor.scrollTo({ top: desiredScrollTop, behavior: "smooth" });
+    } else {
+      console.warn("Editor or cursor element not found.");
     }
-  });
+  };
+
+  const debouncedScrollToCenter = () => {
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    scrollTimeout = setTimeout(() => {
+      requestAnimationFrame(scrollToCenter);
+    }, 100);
+  };
+
+  const setupObserver = () => {
+    const editor = document.querySelector(".kix-appview-editor");
+    if (editor) {
+      const observer = new MutationObserver(debouncedScrollToCenter);
+      observer.observe(editor, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+    } else {
+      console.warn("Editor element not found.");
+    }
+  };
+
+  window.addEventListener("load", setupObserver);
+  document.addEventListener("keydown", debouncedScrollToCenter);
+  document.addEventListener("click", debouncedScrollToCenter);
 };
 
 enableTypewriterScrolling();
