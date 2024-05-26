@@ -4,6 +4,7 @@
 
 const enableTypewriterScrolling = () => {
   let scrollTimeout;
+  let lastCursorTop = 0;
 
   const scrollToCenter = () => {
     const editor = document.querySelector(".kix-appview-editor");
@@ -16,7 +17,10 @@ const enableTypewriterScrolling = () => {
       const scrollTop = editor.scrollTop;
       const desiredScrollTop = scrollTop + offset - editorRect.height / 2;
 
-      editor.scrollTo({ top: desiredScrollTop, behavior: "smooth" });
+      if (cursorRect.top !== lastCursorTop) {
+        editor.scrollTo({ top: desiredScrollTop, behavior: "smooth" });
+        lastCursorTop = cursorRect.top;
+      }
     } else {
       console.warn("Editor or cursor element not found.");
     }
@@ -34,10 +38,11 @@ const enableTypewriterScrolling = () => {
   const setupObserver = () => {
     const editor = document.querySelector(".kix-appview-editor");
     if (editor) {
-      const observer = new MutationObserver(debouncedScrollToCenter);
-      observer.observe(editor, {
+      const cursorObserver = new MutationObserver(debouncedScrollToCenter);
+      cursorObserver.observe(editor, {
         childList: true,
         subtree: true,
+        attributes: true,
         characterData: true,
       });
     } else {
@@ -46,8 +51,6 @@ const enableTypewriterScrolling = () => {
   };
 
   window.addEventListener("load", setupObserver);
-  document.addEventListener("keydown", debouncedScrollToCenter);
-  document.addEventListener("click", debouncedScrollToCenter);
 };
 
 enableTypewriterScrolling();
