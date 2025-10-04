@@ -8,6 +8,7 @@ This is a Chrome extension that enables typewriter-style scrolling in Google Doc
 - Smooth scrolling: The scrolling behavior is smooth and seamless, providing a pleasant typing experience.
 - Cursor movement detection: The extension detects cursor movement and triggers the scrolling accordingly.
 - Debounced scrolling: The scrolling function is debounced to avoid excessive scrolling during rapid cursor movements.
+- Enable and disable scrolling behaviour with a keyboard shortcut (default: control + shift + S)
 
 ## Installation
 
