@@ -4,6 +4,15 @@
   "version": "1.0",
   "description": "Adds typewriter scrolling to Google Docs and Sheets.",
   "permissions": ["activeTab", "scripting"],
+  "commands": {
+    "toggle-typewriter-scroll": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Ctrl+Shift+S"
+      },
+      "description": "Toggle typewriter scrolling on/off"
+    }
+  },
   "content_scripts": [
     {
       "matches": [
